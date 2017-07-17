@@ -1,2 +1,7 @@
 ---
-# defaults file for ansible-role-java
+java_install_base: "/usr/local"
+java_current_link: "{{ java_install_base }}/java"
+
+java_tarball_file: "{{ java_tarball_url | basename }}"
+java_tarball_directory: "{{ java_install_base }}/{{ java_tarball_file | regex_replace('(\\.tar\\.gz|.tgz)', '') }}"
+java_tarball_tmp: "/tmp/{{ java_tarball_file }}"

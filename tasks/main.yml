@@ -1,2 +1,45 @@
 ---
-# tasks file for ansible-role-java
+- name: Optional output of java_tarball_file. Turn on with -v
+  debug:
+    msg: "Set java_tarball_file to {{ java_tarball_file }}"
+    verbosity: 1
+
+- name: Optional output of java_tarball_directory. Turn on with -v
+  debug:
+    msg: "Set java_tarball_file fact to {{ java_tarball_directory }}"
+    verbosity: 1
+
+- name: Download tarball to the node
+  get_url:
+    url: "{{ java_tarball_url }}"
+    dest: "{{ java_tarball_tmp }}"
+
+- name: Create the target unpack directory
+  file:
+    state: directory
+    path: "{{ java_tarball_directory }}"
+
+# We set the owner to the user currently running the task.  Otherwise
+# the unarchived tarball user uid will numerically map to whatever
+# user on the system has the same uid.
+- name: Unarchive tarball
+  unarchive:
+    src: "{{ java_tarball_tmp }}"
+    dest: "{{ java_tarball_directory }}"
+    extra_opts: ["--strip-components=1"]
+    remote_src: True
+    owner: "{{ ansible_user_id }}"
+  register: tarball
+
+- name: Create symlink for the current Java version
+  file:
+    state: link
+    dest: "{{ java_install_base }}/java"
+    src: "{{ java_tarball_directory }}"
+
+- name: Set JAVA_HOME
+  lineinfile:
+    state: present
+    regexp: '^JAVA_HOME'
+    line: "JAVA_HOME={{ java_install_base }}/java"
+    dest: /etc/environment
