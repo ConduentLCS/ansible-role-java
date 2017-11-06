@@ -1,7 +1,7 @@
 ConduentLCS.java
 =========
 
-This role is for installing Java via a remote tarball over HTTP(S).
+This role is for installing Java via a remote tarball over HTTP(S) or from public repository if `java_tarball_url` variable  is not defined.
 
 Requirements
 ------------
@@ -10,7 +10,7 @@ None.
 
 Role Variables
 --------------
-Required
+Optional
 * `java_tarball_url` -- The URL to pull the Java tarball from.
 
 Optional
@@ -32,7 +32,6 @@ Example Playbook
     - hosts: servers
       roles:
          - role: ConduentLCS.java
-           java_tarball_url: "https://tarball.host.com/mytarball.tar.gz"
 ```
 
 License

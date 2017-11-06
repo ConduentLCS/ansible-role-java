@@ -1,0 +1,5 @@
+---
+- name: Ensure Java is installed.
+  zypper:
+   name: java-1_8_0-openjdk
+   state: present
